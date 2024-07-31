@@ -166,10 +166,10 @@ export const syncGraph = (
   }
 
   let isSyncing = false;
-  graph1.on('scale', ({ sx }) => {
+  graph1.on('scale', ({ sx, sy }) => {
     if (!isSyncing) {
       isSyncing = true;
-      graph2.zoomTo(sx);
+      graph2.scale(sx, sy);
       isSyncing = false;
     }
   });
@@ -182,10 +182,10 @@ export const syncGraph = (
     }
   });
 
-  graph2.on('scale', ({ sx }) => {
+  graph2.on('scale', ({ sx, sy }) => {
     if (!isSyncing) {
       isSyncing = true;
-      graph1.zoomTo(sx);
+      graph1.scale(sx, sy);
       isSyncing = false;
     }
   });
