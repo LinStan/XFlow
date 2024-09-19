@@ -1,9 +1,9 @@
-import { PlayCircleOutlined, CopyOutlined } from '@ant-design/icons';
-import type { Edge, NodeOptions, Node } from '@antv/xflow';
+import { CopyOutlined, PlayCircleOutlined } from '@ant-design/icons';
+import type { Edge, Node, NodeOptions } from '@antv/xflow';
 import {
-  useGraphInstance,
   useClipboard,
   useGraphEvent,
+  useGraphInstance,
   useGraphStore,
   useKeyboard,
 } from '@antv/xflow';
@@ -88,7 +88,7 @@ const Toolbar = () => {
         type="primary"
         size="small"
         style={{ fontSize: 12 }}
-        onClick={handleExcute}
+        onClick={handleExecute}
       >
         <PlayCircleOutlined />
         全部执行

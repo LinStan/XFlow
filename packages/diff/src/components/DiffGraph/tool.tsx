@@ -1,7 +1,7 @@
 import type { EdgeOptions, NodeOptions } from '@antv/xflow';
 import { useGraphInstance, useGraphStore } from '@antv/xflow';
-import type { FC } from 'react';
-import React, { useEffect } from 'react';
+import type React from 'react';
+import { useEffect } from 'react';
 
 interface ToolOptions {
   data: {
@@ -11,7 +11,7 @@ interface ToolOptions {
   addGraph: (graph: ReturnType<typeof useGraphInstance>) => void;
 }
 
-const Tool: FC<ToolOptions> = (props) => {
+const Tool: React.FC<ToolOptions> = (props) => {
   const { data, addGraph } = props;
   const initData = useGraphStore((state) => state.initData);
   const graphIns = useGraphInstance();

@@ -1,6 +1,6 @@
 import type { useGraphInstance } from '@antv/xflow';
 
-import type { GraphData, GraphDataWithDiffInfo } from '..';
+import type { DiffInfo, GraphData, GraphDataWithDiffInfo } from '..';
 
 export const compare: (
   originalData: GraphData,
@@ -14,6 +14,7 @@ export const compare: (
 ) => {
   originalDataWithDiffInfo: GraphDataWithDiffInfo;
   currentDataWithDiffInfo: GraphDataWithDiffInfo;
+  diffDetailInfo: DiffInfo[];
 } = (
   originalData,
   currentData,
@@ -33,12 +34,19 @@ export const compare: (
     edges: [...currentData.edges],
   };
 
+  const diffDetailInfo: DiffInfo[] = [];
+
   // 寻找 currentData 中 originalData 没有的数据，即为新增的
   const originalIds = originalData.nodes
     .map((node) => node.id)
     .concat(originalData.edges.map((edge) => edge.id));
+
   for (let i = 0; i < currentData.nodes.length; i++) {
     if (!originalIds.includes(currentData.nodes[i].id)) {
+      console.log(
+        currentDataWithDiffInfo.nodes[i],
+        currentDataWithDiffInfo.nodes[i].diffType,
+      );
       currentDataWithDiffInfo.nodes[i].diffType = 'ADD';
       currentDataWithDiffInfo.nodes[i].attrs = {
         ...currentDataWithDiffInfo.nodes[i].attrs,
@@ -48,8 +56,14 @@ export const compare: (
         },
         ...addExtAttr,
       };
+      diffDetailInfo.push({
+        diffType: 'ADD',
+        currentData: currentData.nodes[i],
+        cellType: 'Node',
+      });
     }
   }
+
   for (let i = 0; i < currentData.edges.length; i++) {
     if (!originalIds.includes(currentData.edges[i].id)) {
       currentDataWithDiffInfo.edges[i].diffType = 'ADD';
@@ -61,13 +75,19 @@ export const compare: (
         },
         ...addExtAttr,
       };
+
+      diffDetailInfo.push({
+        diffType: 'ADD',
+        currentData: currentData.edges[i],
+        cellType: 'Edge',
+      });
     }
   }
 
-  // 寻找 originalData 中 currentData 没有的数据，即为新增的
   const currentIds = currentData.nodes
     .map((node) => node.id)
     .concat(currentData.edges.map((edge) => edge.id));
+
   for (let i = 0; i < originalData.nodes.length; i++) {
     if (!currentIds.includes(originalData.nodes[i].id)) {
       originalDataWithDiffInfo.nodes[i].diffType = 'DEL';
@@ -79,6 +99,12 @@ export const compare: (
         },
         ...delExtAttr,
       };
+
+      diffDetailInfo.push({
+        diffType: 'DEL',
+        currentData: currentData.nodes[i],
+        cellType: 'Node',
+      });
     }
   }
   for (let i = 0; i < originalData.edges.length; i++) {
@@ -92,6 +118,12 @@ export const compare: (
         },
         ...delExtAttr,
       };
+
+      diffDetailInfo.push({
+        diffType: 'DEL',
+        currentData: currentData.edges[i],
+        cellType: 'Edge',
+      });
     }
   }
 
@@ -121,6 +153,13 @@ export const compare: (
           },
           ...changeExtAttr,
         };
+
+        diffDetailInfo.push({
+          diffType: 'CHG',
+          originalData: originalData.nodes[i],
+          currentData: currentData.nodes[j],
+          cellType: 'Node',
+        });
       }
     }
   }
@@ -149,11 +188,18 @@ export const compare: (
           },
           ...changeExtAttr,
         };
+
+        diffDetailInfo.push({
+          diffType: 'CHG',
+          originalData: originalData.edges[i],
+          currentData: currentData.edges[j],
+          cellType: 'Edge',
+        });
       }
     }
   }
 
-  return { originalDataWithDiffInfo, currentDataWithDiffInfo };
+  return { originalDataWithDiffInfo, currentDataWithDiffInfo, diffDetailInfo };
 };
 
 // 同步两图的缩放和移动

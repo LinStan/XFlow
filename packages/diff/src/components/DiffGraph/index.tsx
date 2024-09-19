@@ -3,8 +3,10 @@ import { XFlow, XFlowGraph } from '@antv/xflow';
 import type { FC } from 'react';
 import React, { useEffect, useState } from 'react';
 
-import type { DiffGraphOptions } from '@/types';
+import type { DiffGraphOptions, DiffInfo } from '@/types';
 import { compare, syncGraph } from '@/util';
+
+import { DiffDetailPanel } from '../DiffDetailPanel';
 
 import '../../styles/index.less';
 import Tool from './tool';
@@ -20,6 +22,8 @@ const DiffGraph: FC<DiffGraphOptions> = (props) => {
     changeColor = '#ffc069', // 变更节点的颜色
     changeExtAttr,
     graphOptions,
+    showDiffDetail = false,
+    customRenderDiffDetail,
   } = props;
 
   const [originalDataWithDiffInfo, setOriginalDataWithDiffInfo] = useState<{
@@ -32,6 +36,7 @@ const DiffGraph: FC<DiffGraphOptions> = (props) => {
   }>({ nodes: [], edges: [] });
   const [status, setStatus] = useState<'init' | 'computing' | 'done'>('init');
   const [graphs, setGraphs] = useState<ReturnType<typeof useGraphInstance>[]>([]);
+  const [diffDetailInfo, setDiffDetailInfo] = useState<DiffInfo[]>();
 
   useEffect(() => {
     // 获取 diff 信息，注入 attr
@@ -39,6 +44,7 @@ const DiffGraph: FC<DiffGraphOptions> = (props) => {
     const {
       originalDataWithDiffInfo: originalDataWithDiffInfoRe,
       currentDataWithDiffInfo: currentDataWithDiffInfoRe,
+      diffDetailInfo: diffDetailInfoRe,
     } = compare(
       originalData,
       currentData,
@@ -52,6 +58,7 @@ const DiffGraph: FC<DiffGraphOptions> = (props) => {
 
     setOriginalDataWithDiffInfo(originalDataWithDiffInfoRe);
     setCurrentDataWithDiffInfo(currentDataWithDiffInfoRe);
+    setDiffDetailInfo(diffDetailInfoRe);
     setStatus('done');
   }, []); // eslint-disable-line
 
@@ -69,50 +76,61 @@ const DiffGraph: FC<DiffGraphOptions> = (props) => {
   };
 
   return (
-    <div style={{ height: '100%' }} className="xflow-diff">
-      {/* 左图 */}
-      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-      {/* @ts-ignore */}
-      <XFlow>
-        {status === 'done' && (
-          <Tool data={originalDataWithDiffInfo} addGraph={addGraph} />
-        )}
-        <XFlowGraph
-          zoomable
-          pannable
-          connectionEdgeOptions={{
-            attrs: {
-              line: {
-                stroke: '#8f8f8f',
-                strokeWidth: 1,
+    <div className="xflow-diff">
+      {/* diff详情展示 */}
+      <DiffDetailPanel
+        showDiffDetail={showDiffDetail}
+        diffDetailInfo={diffDetailInfo}
+        customRenderDiffDetail={customRenderDiffDetail}
+        addColor={addColor}
+        delColor={delColor}
+        changeColor={changeColor}
+      />
+      <div className="xflow-container">
+        {/* 左图 */}
+        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+        {/* @ts-ignore */}
+        <XFlow>
+          {status === 'done' && (
+            <Tool data={originalDataWithDiffInfo} addGraph={addGraph} />
+          )}
+          <XFlowGraph
+            zoomable
+            pannable
+            connectionEdgeOptions={{
+              attrs: {
+                line: {
+                  stroke: '#8f8f8f',
+                  strokeWidth: 1,
+                },
               },
-            },
-          }}
-          {...graphOptions}
-        />
-      </XFlow>
+            }}
+            {...graphOptions}
+          />
+        </XFlow>
 
-      {/* 右图 */}
-      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-      {/* @ts-ignore */}
-      <XFlow>
-        {status === 'done' && (
-          <Tool data={currentDataWithDiffInfo} addGraph={addGraph} />
-        )}
-        <XFlowGraph
-          zoomable
-          pannable
-          connectionEdgeOptions={{
-            attrs: {
-              line: {
-                stroke: '#8f8f8f',
-                strokeWidth: 1,
+        {/* 右图 */}
+        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+        {/* @ts-ignore */}
+        <XFlow>
+          {status === 'done' && (
+            <Tool data={currentDataWithDiffInfo} addGraph={addGraph} />
+          )}
+          <XFlowGraph
+            zoomable
+            pannable
+            connectionEdgeOptions={{
+              attrs: {
+                line: {
+                  stroke: '#8f8f8f',
+                  strokeWidth: 1,
+                },
               },
-            },
-          }}
-          {...graphOptions}
-        />
-      </XFlow>
+            }}
+            {...graphOptions}
+          />
+        </XFlow>
+      </div>
     </div>
   );
 };

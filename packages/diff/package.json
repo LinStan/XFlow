@@ -1,28 +1,36 @@
 {
   "name": "@antv/xflow-diff",
-  "version": "1.0.0",
-  "description": "",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.esm.js",
-  "types": "dist/typing/index.d.ts",
+  "version": "1.1.0",
   "private": false,
-  "files": [
-    "dist",
-    "src"
-  ],
+  "description": "",
   "keywords": [
     "xflow",
     "x6",
     "antv"
   ],
+  "bugs": {
+    "url": "https://github.com/antvis/XFlow/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/antvis/XFlow.git",
+    "directory": "packages/diff"
+  },
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/typing/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
-    "setup": "tsup src/index.ts",
     "build": "tsup src/index.ts",
     "dev": "tsup src/index.ts --watch",
-    "lint:js": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
     "lint:css": "stylelint --allow-empty-input 'src/**/*.{css,less}'",
     "lint:format": "prettier --check *.md *.json 'src/**/*.{js,jsx,ts,tsx,css,less,md,json}'",
+    "lint:js": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
     "lint:typing": "tsc --noEmit",
+    "setup": "tsup src/index.ts",
     "test": "jest --coverage"
   },
   "dependencies": {
@@ -38,14 +46,6 @@
     "antd": ">= 3.26.19 || >=5.0.0",
     "react": ">=16.8.6 || >=17.0.0 || >=18.0.0",
     "react-dom": ">=16.8.6 || >=17.0.0 || >= 18.0.0"
-  },
-  "bugs": {
-    "url": "https://github.com/antvis/XFlow/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/antvis/XFlow.git",
-    "directory": "packages/diff"
   },
   "publishConfig": {
     "access": "public"

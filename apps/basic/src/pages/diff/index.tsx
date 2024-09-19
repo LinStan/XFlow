@@ -1,5 +1,5 @@
-/* eslint-disable */
 import { DiffGraph } from '@antv/xflow-diff';
+import { useState } from 'react';
 
 // 变更前数据
 const originalData = {
@@ -318,9 +318,23 @@ const currentData = {
 };
 
 const Page = () => {
+  const [showDiffDetail, setShowDiffDetail] = useState(true);
+
+  const onClickHandle = () => {
+    setShowDiffDetail(!showDiffDetail);
+  };
   return (
-    <div style={{ height: 500 }}>
-      <DiffGraph originalData={originalData} currentData={currentData} />
+    <div>
+      <button onClick={onClickHandle}>{`${
+        showDiffDetail ? '隐藏' : '展示'
+      }变更详情`}</button>
+      <div style={{ height: 500 }}>
+        <DiffGraph
+          originalData={originalData}
+          currentData={currentData}
+          showDiffDetail={showDiffDetail}
+        />
+      </div>
     </div>
   );
 };
